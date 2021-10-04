@@ -75,7 +75,7 @@ function renderBoard(board) {
         for (var j = 0; j < board[0].length; j++) {
             var cell = board[i][j];
             strHtml += `<td data-i="${i}" data-j="${j}"
-            onclick="cellClicked(this,${i},${j})"
+            onmousedown="handleMouse(event)" onclick="cellClicked(this,${i},${j})"
             ><span hidden>${cell.value}</span></td>`
         }
         strHtml += '</tr>'
@@ -149,6 +149,10 @@ function updateTimer(startTime) {
 
 function stopTimer() {
     clearInterval(gInterval);
+}
+
+function handleMouse(event){
+    console.log('event.button',event.button);
 }
 
 
