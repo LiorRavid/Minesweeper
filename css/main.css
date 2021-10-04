@@ -4,3 +4,8 @@
     text-align: center;
     transition: 0.5s;
 }
+
+.timer{
+    margin-left: 70px;
+    display: inline-block;
+}

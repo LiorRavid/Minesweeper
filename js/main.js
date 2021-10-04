@@ -17,10 +17,12 @@ var gGame = {
     secsPassed: 0 
 }
 
+var isFirstClick = true
+var gInterval
+
 function init(){
     gBoard=buildBoard()
-    gBoard[2][2].value = MINE
-    gBoard[0][3].value = MINE
+    addRandomMine(gBoard)
     gBoard = setMinesNegsCount(gBoard)
     renderBoard(gBoard)
     console.table(gBoard)
@@ -37,6 +39,18 @@ function buildBoard() {
         }
     }
     return board
+}
+
+// add random mine in the model
+function addRandomMine(board){
+	var cells = getCells(board)
+    for(var i=0;i<2;i++){
+        var idx = getRandomCell(cells)
+        var pos = cells[idx]
+        board[pos.i][pos.j].value = MINE
+        board[pos.i][pos.j].isMine = true
+        cells.splice(idx,1)
+    }
 }
 
 // create object in cell
@@ -67,26 +81,26 @@ function renderBoard(board) {
         strHtml += '</tr>'
     }
     console.log('strHtml', strHtml)
-    var elBoard = document.querySelector('.board');
+    var elBoard = document.querySelector('.board')
     elBoard.innerHTML = strHtml
 }
 
 // render cell in the DOM
-// function renderCell(i, j, value) {
-//     var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
-//     // console.log('elCell', elCell);
-//     elCell.innerText = value;
-//     elCell.classList.remove('occupied');
-
-// }
+function renderCell(i, j, value) {
+    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`);
+    elCell.innerText = value
+    console.log('elCell',elCell)
+}
 
 // Count mines around each cell and set the cell's minesAroundCount
 function setMinesNegsCount(board){
     for(var i=0;i<board.length;i++){
         for(var j=0;j<board[0].length;j++){
-        var negsCount = countNeighbors(i,j,board)
-        board[i][j].minesAroundCount = negsCount
-        if(negsCount>0)board[i][j].value = negsCount
+            var negsCount = countNeighbors(i,j,board)
+            if(!board[i][j].isMine && negsCount>0){
+                board[i][j].value = negsCount
+                board[i][j].minesAroundCount = negsCount
+            }
         }
     }
     return board
@@ -94,8 +108,14 @@ function setMinesNegsCount(board){
 
 // Called when a cell (td) is clicked
 function cellClicked(elCell,cellI, cellJ){
+    if(isFirstClick){
+        isFirstClick = false
+        gGame.isOn=true
+        startTimer()
+    }
     if(gBoard[cellI][cellJ].value!== MINE && gBoard[cellI][cellJ].value!==''){
         gBoard[cellI][cellJ].isShown = true
+        gGame.shownCount++
         showCellValue(cellI,cellJ)
     }
 }
@@ -113,3 +133,23 @@ function showCellValue(cellI,cellJ) {
 
 // When user clicks a cell with no mines around, we need to open not only that cell, but also its neighbors
 // function expandShown(board, elCell, i, j)
+
+function startTimer() {
+    var startTime = Date.now()
+    updateTimer(startTime)
+}
+function updateTimer(startTime) {
+    var elTimer = document.querySelector(".timer h3 span")
+    gInterval = setInterval(function () {
+        var timeNow = Date.now()
+        var seconds = (timeNow - startTime) / 1000
+        elTimer.innerText =gGame.secsPassed= seconds
+    }, 100)
+}
+
+function stopTimer() {
+    clearInterval(gInterval);
+}
+
+
+
