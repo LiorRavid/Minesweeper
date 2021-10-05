@@ -86,7 +86,6 @@ function renderBoard(board) {
         }
         strHtml += '</tr>'
     }
-    console.log(strHtml)
     var elBoard = document.querySelector('.board')
     elBoard.innerHTML = strHtml
 }
