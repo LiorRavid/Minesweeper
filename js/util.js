@@ -1,16 +1,29 @@
 'use strict'
 
-// get a copy of mat
-function copyMat(mat) {
-    var newMat = []
-    for (var i = 0; i < mat.length; i++) {
-        newMat[i] = []
-        for (var j = 0; j < mat[0].length; j++) {
-            newMat[i][j] = mat[i][j]
+// Builds the board, and return the created board
+function buildBoard(size) {
+    var board = []
+    for (var i = 0; i < size; i++) {
+        board.push([])
+        for (var j = 0; j < size; j++) {
+            board[i][j] = createCell()
         }
     }
-    return newMat
+    return board
 }
+
+// create object in cell
+function createCell(){
+    var cell={
+        minesAroundCount: 0,
+        isShown: false,
+        isMine: false,
+        isMarked: false,
+        value:''
+    }
+    return cell
+}
+
 
 // count neighbors
 function countNeighbors(cellI, cellJ, board) {
@@ -25,6 +38,7 @@ function countNeighbors(cellI, cellJ, board) {
     }
     return neighborsCount
 }
+
 
 // get an array with cells idx in the matrix 
 function getCells(board){
@@ -49,3 +63,25 @@ function getRandomInt(min, max){
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1) + min)
     }
+
+// start timer of the game
+function startTimer() {
+    var startTime = Date.now()
+    updateTimer(startTime)
+}
+
+// update the timer  
+function updateTimer(startTime) {
+    var elTimer = document.querySelector(".timer h3 span")
+    gInterval = setInterval(function () {
+        var timeNow = Date.now()
+        var seconds = (timeNow - startTime) / 1000
+        elTimer.innerText = seconds
+    }, 100)
+}
+
+// stop the timer
+function stopTimer() {
+    clearInterval(gInterval)
+}
+

@@ -1,11 +1,46 @@
+body{
+    background-color: rgba(211, 211, 211, 0.897);
+}
+
+img{
+    display: block;
+}
+
+.btn{
+    width: 80px;
+    height: 40px;
+    border-radius: 15%;
+    font-family:monospace;
+    text-align:center;   
+}
+
 .board td {
     width: 30px;
     height: 30px;
     text-align: center;
     transition: 0.5s;
+    font-family:monospace;
+}
+
+td span{
+    font-family:monospace;
+    text-align:center;  
+}
+
+.hide{
+    background-color: gray;
 }
 
 .timer{
     margin-left: 70px;
     display: inline-block;
 }
+
+.LIVES{
+    margin-left: 70px;
+    display: inline-block;
+}
+
+
+
+
