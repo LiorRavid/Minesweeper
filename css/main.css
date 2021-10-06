@@ -30,10 +30,10 @@ img{
 
 table{
     position:relative;
-    top: 10px;
+    top: 40px;
     margin: auto;
     border-style:outset;
-    border-color:gray;     
+    border-color:gray;   
 }
 
 .board td {
@@ -76,6 +76,56 @@ table{
     display: inline-block; 
 }
 
+.Bonus{
+    display: flex;
+    position:absolute;
+    margin-top: 10px;
+    left:45%;
+    top:720px;
+    align-items: center;
+}
+
+.sevenBoom{
+    display:inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 40px;
+    border-radius: 15%;
+    border-style:dotted;
+    border-color: black;
+    margin: 5px;
+    font-family:monospace;
+}
+
+.safeClick{
+    left: 40%;
+    margin-top:-10px;
+    width: 65px;
+    height:65px;
+    border-style:outset;
+    border-color: white;
+    border-radius: 100%;
+    background-color: rgb(35, 85, 223);
+}
+
+.safeClick h4{
+    color: ivory;
+    text-align: center;
+}
+
+.clicksAvailable{
+    position:relative;
+    display: inline-block;
+    width: 200px;
+    height:65px;
+    top: 50px;
+    left: -27%;
+}
+.clicksAvailable span{
+    padding: 5px;
+}
+
 .noClick{
     pointer-events:none;
 }
@@ -83,6 +133,12 @@ table{
 .hide{
     background-color: gray;
 }
+
+.markCell{
+    background-color:coral ;
+}
+
+
 
 
 
