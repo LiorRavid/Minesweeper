@@ -12,18 +12,6 @@ function buildBoard(size) {
     return board
 }
 
-// create object in cell
-function createCell(){
-    var cell={
-        minesAroundCount: 0,
-        isShown: false,
-        isMine: false,
-        isMarked: false,
-        value:''
-    }
-    return cell
-}
-
 
 // count neighbors
 function countNeighbors(cellI, cellJ, board) {

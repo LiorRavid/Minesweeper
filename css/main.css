@@ -1,44 +1,87 @@
 body{
     background-color: rgba(211, 211, 211, 0.897);
+    font-family:monospace;
 }
 
 img{
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.buttons{
+    display: block;
+    max-width: fit-content;
+    margin: auto;
+    margin-bottom: 8px;
 }
 
 .btn{
+    display:inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 80px;
     height: 40px;
     border-radius: 15%;
-    font-family:monospace;
-    text-align:center;   
+    margin: 5px;
+    font-family:monospace; 
+}
+
+table{
+    position:relative;
+    top: 10px;
+    margin: auto;
+    border-style:outset;
+    border-color:gray;     
 }
 
 .board td {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     text-align: center;
     transition: 0.5s;
-    font-family:monospace;
 }
 
-td span{
-    font-family:monospace;
-    text-align:center;  
+.gameData{
+    max-width:fit-content; 
+    margin: auto;
+}
+
+.timer{
+    position: absolute;
+    margin-left: -50px ;
+    display: inline-block;  
+}
+
+.LIVES{
+    position:relative;
+    left:60px;
+    display: inline-block;
+}
+
+.LIVES span{
+    border-style:outset;
+    border-radius: 10%;
+    padding: 4px;
+    color:red;
+}
+
+.smiley{
+    position: relative;
+    left:42px;
+    width: 45px;
+    height: 25px;
+    top: 2px; 
+    display: inline-block; 
+}
+
+.noClick{
+    pointer-events:none;
 }
 
 .hide{
     background-color: gray;
-}
-
-.timer{
-    margin-left: 70px;
-    display: inline-block;
-}
-
-.LIVES{
-    margin-left: 70px;
-    display: inline-block;
 }
 
 

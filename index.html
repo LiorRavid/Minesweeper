@@ -14,14 +14,16 @@
             <button onclick="chooseLevel(this)" class="btn Medium"><h4>Medium</h4></button>
             <button onclick="chooseLevel(this)" class="btn Expert"><h4>Expert</h4></button>
         </div>
-        <button onclick="restartGame()"><span>😃</span></button>
-        <div class="timer">
-            <h3>Time <span></span></h3>
+        <div class="gameData">
+            <div class="timer">
+                <h3>TIME <span>0</span></h3>
+            </div>
+            <button class="smiley" onclick="restartGame()"><span>😃</span></button> 
+            <div class="LIVES">
+                <h3>LIVES <span>2</span></h3>
+            </div>
         </div> 
-        <div class="LIVES">
-            <h3>LIVES <span style="color:red">2</span></h3>
-        </div> 
-        <table border="1" cellpadding="10">
+        <table border="4">
             <tbody class="board">
     
             </tbody>

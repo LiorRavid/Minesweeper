@@ -15,7 +15,6 @@ var gLevel = {
 }
 
 var gGame = { 
-    isOn: false,
     shownCount: 0, 
     markedCount: 0,  
 }
@@ -40,9 +39,7 @@ function chooseLevel(elBtn) {
         gLevel.MINES=30
         gLivesCount=3
     }
-    renderNewLives()
-    stopTimer()
-    init()
+    restartGame()
 }
 
 function init(){
@@ -53,6 +50,18 @@ function init(){
     gGame.markedCount=0
     gBoard=buildBoard(gLevel.SIZE)
     renderBoard(gBoard)
+}
+
+// create object in cell
+function createCell(){
+    var cell={
+        minesAroundCount: 0,
+        isShown: false,
+        isMine: false,
+        isMarked: false,
+        value:''
+    }
+    return cell
 }
 
 // add random mines in the model
@@ -88,12 +97,7 @@ function renderBoard(board) {
     }
     var elBoard = document.querySelector('.board')
     elBoard.innerHTML = strHtml
-}
-
-// function render cell in the DOM
-function renderCell(i, j, value) {
-    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"] span`)
-    elCell.innerText = value
+    console.log(strHtml)
 }
 
 // Count mines around each cell and set the cell's minesAroundCount
@@ -112,27 +116,28 @@ function setMinesNegsCount(board){
 
 // Called when a cell (td) is clicked elCell
 function cellClicked(cellI, cellJ){
+    console.log('hello');
     if(isFirstClick){
         addRandomMine(gBoard,gLevel.MINES,cellI, cellJ)
         gBoard = setMinesNegsCount(gBoard)
         renderBoard(gBoard)
         isFirstClick = false
-        gGame.isOn=true
         startTimer()
     }
     if(checkIfFlag(cellI, cellJ))return
     if(gBoard[cellI][cellJ].value!== MINE){
         gBoard[cellI][cellJ].isShown = true
-        gGame.shownCount++
         var negsCount = countNeighbors(cellI, cellJ,gBoard)
         if(negsCount===0){
             expandShown(cellI, cellJ,gBoard)
             checkVictory()
         }else {
+            gGame.shownCount++
+            console.log('after if',gGame.shownCount)
             showCellValue(cellI,cellJ)
             checkVictory()
         }
-    }else if(gBoard[cellI][cellJ].value===MINE){
+    }else{
         gLivesCount--
         showCellValue(cellI,cellJ)
         renderNewLives()
@@ -145,14 +150,61 @@ function cellClicked(cellI, cellJ){
     } 
 }
 
+// Called on right click to mark a cell (suspected to be a mine)
+function cellMarked(event,cellI,cellJ){
+    if(isFirstClick){
+        addRandomMine(gBoard,gLevel.MINES,cellI, cellJ)
+        gBoard = setMinesNegsCount(gBoard)
+        renderBoard(gBoard)
+        isFirstClick = false
+        startTimer()
+    }
+    if(checkIfFlag(cellI, cellJ)){
+        hideCellValue(cellI,cellJ)
+        gBoard[cellI][cellJ].isMarked = false
+        renderCell(cellI, cellJ,gBoard[cellI][cellJ].value)
+        gGame.markedCount--
+    }else{
+        var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"] span`)
+        elCell.innerText = FLAG
+        showCellValue(cellI,cellJ)
+        gBoard[cellI][cellJ].isMarked = true
+        gGame.markedCount++
+        checkVictory()
+    }
+}
+
 // show the value in the cell
-function showCellValue(cellI,cellJ) { 
-    var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"] span`) 
-    elCell.hidden=false
-    if(elCell.innerText===FLAG){
+function showCellValue(cellI,cellJ) {
+    var elCell= document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`)   
+    var elCellTxt = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"] span`) 
+    elCellTxt.hidden=false
+    if(elCellTxt.innerText===FLAG){
         return
     }else{
-        document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"]`).classList.remove('hide')
+        elCell.classList.remove('hide')
+        elCell.classList.add('noClick')
+    }
+}
+
+// When user clicks a cell with no mines around,show not only that cell, but also its neighbors
+function expandShown(cellI, cellJ, board) {
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            console.log('i :'+i+' j: '+j)
+            if (j < 0 || j >= board[i].length) continue
+            if (i === cellI && j === cellJ)gGame.shownCount++
+            if(board[i][j].isShown){
+                console.log('after (-)',gGame.shownCount)
+                showCellValue(i,j)
+                continue
+            }
+            showCellValue(i,j)
+            board[i][j].isShown = true
+            gGame.shownCount++
+            console.log('after in expand',gGame.shownCount)
+        }
     }
 }
 
@@ -167,33 +219,6 @@ function checkIfFlag(cellI, cellJ){
     return(elCell.innerText===FLAG)
 }
 
-// Called on right click to mark a cell (suspected to be a mine)
-function cellMarked(event,cellI,cellJ){
-    if(isFirstClick){
-        addRandomMine(gBoard,gLevel.MINES,cellI, cellJ)
-        gBoard = setMinesNegsCount(gBoard)
-        renderBoard(gBoard)
-        isFirstClick = false
-        gGame.isOn=true
-        startTimer()
-    }
-    if(event.button===2){
-        if(checkIfFlag(cellI, cellJ)){
-            hideCellValue(cellI,cellJ)
-            gBoard[cellI][cellJ].isMarked = false
-            renderCell(cellI, cellJ,gBoard[cellI][cellJ].value)
-            gGame.markedCount--
-        }else{
-            var elCell = document.querySelector(`[data-i="${cellI}"][data-j="${cellJ}"] span`)
-            elCell.innerText = FLAG
-            showCellValue(cellI,cellJ)
-            gBoard[cellI][cellJ].isMarked = true
-            gGame.markedCount++
-            checkVictory()
-        }
-    }
-}
-
 // reveal all the mines on the board
 function revealMines(){
     for (var i = 0; i < gBoard.length; i++) {
@@ -206,12 +231,8 @@ function revealMines(){
     }
 }
 
-// a function that finish the game if you click a mine
-function gameOver(){
-    stopTimer()
-    gGame.isOn = false
-}
 
+// check if the gamer wins
 function checkVictory(){
     var length = gBoard.length
     if(length===4){
@@ -239,8 +260,16 @@ function checkVictory(){
     }
 }
 
+
+function gameOver(){
+    stopTimer()
+    disableClick()
+}
+
+
 function restartGame(){
     gameOver()
+    enableClick()
     renderSmiley(NORMAL)
     resetGameLevel()
     init()
@@ -257,19 +286,10 @@ function resetGameLevel(){
     renderNewLives()
 }
 
-// When user clicks a cell with no mines around, we need to open not only that cell, but also its neighbors
-function expandShown(cellI, cellJ, board) {
-    for (var i = cellI - 1; i <= cellI + 1; i++) {
-        if (i < 0 || i >= board.length) continue
-        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
-            if (j < 0 || j >= board[i].length) continue
-            if (i === cellI && j === cellJ){
-                gGame.shownCount--
-            }
-            showCellValue(i,j)
-            gGame.shownCount++
-        }
-    }
+// render cell in the DOM
+function renderCell(i, j, value) {
+    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"] span`)
+    elCell.innerText = value
 }
 
 // render the smily button
@@ -288,6 +308,20 @@ function renderNewTimer(){
     var elTimer = document.querySelector(".timer h3 span")
     elTimer.innerText=''
 }
+
+// disable click on any cell in the matrix
+function disableClick(){
+    var elTable = document.querySelector('tbody')
+    elTable.classList.add('noClick') 
+}
+
+// enable click on any cell in the matrix
+function enableClick(){
+    var elTable = document.querySelector('tbody')
+    elTable.classList.remove('noClick') 
+}
+
+
 
 
 
